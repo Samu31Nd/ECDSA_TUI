@@ -15,5 +15,5 @@ Hecho para la clase de Selected Topics in Cryptography.
 #### TODO:
 - [X] Proceso de firma y verificación.
 - [X] Firma cargada si apenas ha sido creada.
-- [ ] Logging del proceso con arg en cmd.
+- [X] Logging del proceso con arg en cmd.
 - [ ] Mejoras de UX.
