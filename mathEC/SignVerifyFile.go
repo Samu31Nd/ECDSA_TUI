@@ -27,7 +27,7 @@ func SignDocument(filePath string, key *ecdsa.PrivateKey) (string, error) {
 	// HASH(m) usando SHA-256 CheckSum
 	hash := sha256.Sum256(msgToSign)
 	logging.SendLog("[Log] SignDocument: Llave privada \n\tName: %v\n\tD (valor privado):%v\n\tB:%v\n\tx,y:(%v,%v)\n\tn: %v\n\tp:%v).", key.Params().Name, key.D, key.Params().B, key.X, key.Y, key.Params().N, key.Params().P)
-	logging.SendLog("[Log] SignDocument: Hash del archivo (SHA-256): (%v)", hash)
+	logging.SendLog("[Log] SignDocument: Hash del archivo (SHA-256): (%x)", hash)
 	// firma hash con privada, genera (r,s)
 	r, s, err := ecdsa.Sign(rand.Reader, key, hash[:])
 	if err != nil {
@@ -38,7 +38,7 @@ func SignDocument(filePath string, key *ecdsa.PrivateKey) (string, error) {
 
 	// Marshalling de firma en formato ASN.1/DER para archivo
 	signBytes, err := asn1.Marshal(EcdsaSignature{R: r, S: s})
-	logging.SendLog("[Log] SignDocument: Longitud de firma: (%v)\n\tFirma en bytes: (%v)", len(signBytes), signBytes)
+	logging.SendLog("[Log] SignDocument: Longitud de firma: (%v)\n\tFirma en bytes: (%x)", len(signBytes), signBytes)
 	if err != nil {
 		logging.SendLog("[Error] SignDocument: error al intentar marshal del archivo: %v", err)
 		return "", fmt.Errorf("error al hacer marshal del archivo: %v", err)
@@ -110,7 +110,7 @@ func VerifyFile(filePath string, key *ecdsa.PublicKey) error {
 	logging.SendLog("[Log] SignDocument: Firma ECDSA: \n\tR:(%v)\n\tS:(%v)", extractedSig.R, extractedSig.S)
 	// HASH(m)
 	extractedHash := sha256.Sum256(extractedMessage)
-	logging.SendLog("[Log] SignDocument: Hash extraido del archivo original: (%v)", extractedHash)
+	logging.SendLog("[Log] SignDocument: Hash extraido del archivo original: (%x)", extractedHash)
 	// verificación
 	isValid := ecdsa.Verify(key, extractedHash[:], extractedSig.R, extractedSig.S)
 	if !isValid {
