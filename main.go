@@ -5,7 +5,9 @@ import (
 	getstring "ecdsa_gui/gui/get-string"
 	mainmenu "ecdsa_gui/gui/main-menu"
 	showdialog "ecdsa_gui/gui/show-dialog"
+	"ecdsa_gui/logging"
 	mathec "ecdsa_gui/mathEC"
+	"flag"
 )
 
 var (
@@ -15,6 +17,17 @@ var (
 )
 
 func main() {
+	// preparar para logging
+	logPtr := flag.Bool("log", false, "produces logging output of the program")
+	flag.Parse()
+	if *logPtr {
+		err := logging.StartLogging()
+		if err != nil {
+			showdialog.ShowError(err.Error())
+			return
+		}
+		defer logging.LogService.Close()
+	}
 	for {
 		// hasta que el usuario decida salirse, menú
 		n := mainmenu.ObtenerOpcion()

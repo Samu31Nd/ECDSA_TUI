@@ -3,7 +3,7 @@ package mathec
 import (
 	"crypto/ecdsa"
 	"crypto/x509"
-	"encoding/hex"
+	"ecdsa_gui/logging"
 	"encoding/pem"
 	"fmt"
 	"os"
@@ -11,15 +11,12 @@ import (
 
 const PathKeys = "keys"
 
-func hexFile(path string, data []byte) error {
-	hexs := hex.EncodeToString(data)
-	return os.WriteFile(path, []byte(hexs), 0644)
-}
-
 func writePEM(filename, blockType string, data []byte, perm os.FileMode) error {
 	if _, err := os.Stat(PathKeys); os.IsNotExist(err) {
+		logging.SendLog("[Error] writePEM: error al intentar abrir el directorio : %v\n\tIntentando crear directorio...", err)
 		err2 := os.Mkdir(PathKeys, 0755)
 		if err2 != nil {
+			logging.SendLog("[Error] writePEM: error al crear directorio: %v", err2)
 			return err2
 		}
 	}
