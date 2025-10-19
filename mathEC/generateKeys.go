@@ -13,6 +13,7 @@ type Keys struct {
 	PubKey  *ecdsa.PublicKey
 }
 
+// generación de llaves usando curva P-256
 func GenerateKeys(namePrefix string) (Keys, error) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	if err != nil {
@@ -20,11 +21,12 @@ func GenerateKeys(namePrefix string) (Keys, error) {
 	}
 	publicKey := &privateKey.PublicKey
 
+	// estándar usando x509, en específico, PKCS#8
 	privBytes, err := x509.MarshalPKCS8PrivateKey(privateKey)
 	if err != nil {
 		return Keys{}, err
 	}
-
+	// estándar usando x509, en específico, PKIX
 	pubBytes, err := x509.MarshalPKIXPublicKey(publicKey)
 	if err != nil {
 		return Keys{}, err
